@@ -61,10 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start, // Align text to the start
           children: [
             const Text(
               'Login',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent, // Added color
+              ),
             ),
             const SizedBox(height: 30),
 
@@ -72,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
+                prefixIcon: Icon(Icons.person), // Added icon
                 border: OutlineInputBorder(),
               ),
             ),
@@ -82,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Password',
+                prefixIcon: Icon(Icons.lock), // Added icon
                 border: OutlineInputBorder(),
               ),
             ),
@@ -92,7 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 50,
               child: ElevatedButton(
                 onPressed: login,
-                child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Added background color
+                  foregroundColor: Colors.white, // Added text color
+                ),
+                child: const Text('Login', style: TextStyle(fontSize: 18)), // Increased font size
               ),
             ),
           ],
