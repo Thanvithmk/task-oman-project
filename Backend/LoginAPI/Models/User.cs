@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LoginAPI.Models
 {
-    [Table("USERS")]
+    [Table("USERS")]   // 👈 IMPORTANT
     public class User
     {
         [Key]

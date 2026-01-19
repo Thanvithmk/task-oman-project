@@ -9,26 +9,7 @@ namespace LoginAPI.Helpers
         {
             byte[] salt = RandomNumberGenerator.GetBytes(16);
 
-            string hashed = Convert.ToBase64String(
-                KeyDerivation.Pbkdf2(
-                    password: password,
-                    salt: salt,
-                    prf: KeyDerivationPrf.HMACSHA256,
-                    iterationCount: 10000,
-                    numBytesRequested: 32
-                )
-            );
-
-            return $"{Convert.ToBase64String(salt)}.{hashed}";
-        }
-
-        public static bool Verify(string password, string storedHash)
-        {
-            var parts = storedHash.Split('.');
-            byte[] salt = Convert.FromBase64String(parts[0]);
-            string hash = parts[1];
-
-            string computedHash = Convert.ToBase64String(
+            string hash = Convert.ToBase64String(
                 KeyDerivation.Pbkdf2(
                     password,
                     salt,
@@ -38,7 +19,26 @@ namespace LoginAPI.Helpers
                 )
             );
 
-            return hash == computedHash;
+            return $"{Convert.ToBase64String(salt)}.{hash}";
+        }
+
+        public static bool Verify(string password, string stored)
+        {
+            var parts = stored.Split('.');
+            var salt = Convert.FromBase64String(parts[0]);
+            var hash = parts[1];
+
+            var inputHash = Convert.ToBase64String(
+                KeyDerivation.Pbkdf2(
+                    password,
+                    salt,
+                    KeyDerivationPrf.HMACSHA256,
+                    10000,
+                    32
+                )
+            );
+
+            return hash == inputHash;
         }
     }
 }

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/* ===================== LOGIN SCREEN ===================== */
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -26,31 +28,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   Future<void> login() async {
-    final response = await http.post(
+    final res = await http.post(
       Uri.parse('http://127.0.0.1:5106/api/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'username': usernameController.text,
-        'password': passwordController.text,
+        'username': username.text,
+        'password': password.text,
       }),
     );
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Successful')),
+    if (res.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const WelcomePage()),
       );
-
-      // clear input fields
-      usernameController.clear();
-      passwordController.clear();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid Credentials')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(res.body)));
     }
   }
 
@@ -61,52 +59,115 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start, // Align text to the start
           children: [
             const Text(
-              'Login',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent, // Added color
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                prefixIcon: Icon(Icons.person), // Added icon
-                border: OutlineInputBorder(),
-              ),
+              "Login",
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-
             TextField(
-              controller: passwordController,
+              controller: username,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: password,
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                prefixIcon: Icon(Icons.lock), // Added icon
-                border: OutlineInputBorder(),
-              ),
             ),
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent, // Added background color
-                  foregroundColor: Colors.white, // Added text color
-                ),
-                child: const Text('Login', style: TextStyle(fontSize: 18)), // Increased font size
-              ),
-            ),
+            const SizedBox(height: 24),
+            ElevatedButton(onPressed: login, child: const Text('Login')),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                );
+              },
+              child: const Text('Create Account'),
+            )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/* ===================== REGISTER SCREEN ===================== */
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
+
+  Future<void> register() async {
+    final res = await http.post(
+      Uri.parse('http://127.0.0.1:5106/api/auth/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username.text,
+        'password': password.text,
+      }),
+    );
+
+    if (res.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const WelcomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(res.body)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Create Account')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: username,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: password,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(onPressed: register, child: const Text('Register')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/* ===================== WELCOME PAGE ===================== */
+
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Home")),
+      body: const Center(
+        child: Text(
+          "Welcome",
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
         ),
       ),
     );

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Oracle.ManagedDataAccess.Client;
+using LoginAPI.Data;
 using LoginAPI.Models;
+using LoginAPI.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace LoginAPI.Controllers
 {
@@ -8,34 +10,47 @@ namespace LoginAPI.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly AppDbContext _context;
 
-        public AuthController(IConfiguration config)
+        public AuthController(AppDbContext context)
         {
-            _config = config;
+            _context = context;
         }
 
+        // LOGIN
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLogin login)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            using var con = new OracleConnection(
-                _config.GetConnectionString("OracleDB"));
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == request.Username);
 
-            con.Open();
+            if (user == null ||
+                !PasswordHasher.Verify(request.Password, user.Password))
+                return Unauthorized("Invalid credentials");
 
-            string sql =
-                "SELECT COUNT(*) FROM USERS WHERE USERNAME=:u AND PASSWORD=:p";
-
-            using var cmd = new OracleCommand(sql, con);
-            cmd.Parameters.Add(new OracleParameter("u", login.Username));
-            cmd.Parameters.Add(new OracleParameter("p", login.Password));
-
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-            if (count > 0)
-                return Ok("Login Successful");
-            else
-                return Unauthorized("Invalid Credentials");
+            return Ok("Login Successful");
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(LoginRequest request)
+        {
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == request.Username);
+
+            if (existingUser != null)
+                return BadRequest("Username already exists");
+
+            var user = new User
+            {
+                Username = request.Username,
+                Password = PasswordHasher.Hash(request.Password)
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok("User registered successfully");
+        }
+
     }
 }
