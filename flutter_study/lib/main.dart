@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login() async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.15106/api/auth/login'),
+      Uri.parse('http://127.0.0.1:5106/api/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': usernameController.text,
