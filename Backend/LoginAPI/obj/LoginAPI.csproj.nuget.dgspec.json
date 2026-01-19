@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/thanvithmk/development/projects/Oman/Backend/LoginAPI/LoginAPI.csproj": {}
+    "/Users/thanvithmk/development/projects/task-oman-project/Backend/LoginAPI/LoginAPI.csproj": {}
   },
   "projects": {
-    "/Users/thanvithmk/development/projects/Oman/Backend/LoginAPI/LoginAPI.csproj": {
+    "/Users/thanvithmk/development/projects/task-oman-project/Backend/LoginAPI/LoginAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/thanvithmk/development/projects/Oman/Backend/LoginAPI/LoginAPI.csproj",
+        "projectUniqueName": "/Users/thanvithmk/development/projects/task-oman-project/Backend/LoginAPI/LoginAPI.csproj",
         "projectName": "LoginAPI",
-        "projectPath": "/Users/thanvithmk/development/projects/Oman/Backend/LoginAPI/LoginAPI.csproj",
+        "projectPath": "/Users/thanvithmk/development/projects/task-oman-project/Backend/LoginAPI/LoginAPI.csproj",
         "packagesPath": "/Users/thanvithmk/.nuget/packages/",
-        "outputPath": "/Users/thanvithmk/development/projects/Oman/Backend/LoginAPI/obj/",
+        "outputPath": "/Users/thanvithmk/development/projects/task-oman-project/Backend/LoginAPI/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/thanvithmk/.nuget/NuGet/NuGet.Config"
@@ -47,6 +47,20 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.2, )"
+            },
+            "Oracle.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.23.26000, )"
             },
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
